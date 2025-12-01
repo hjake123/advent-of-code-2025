@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 // Remember to set the input files to copy when building!
-Console.WriteLine($"A: {A("./input.txt")}");
-Console.WriteLine($"B: {B("./input.txt")}");
+Console.WriteLine($"A: {A("./input/input.txt")}");
+Console.WriteLine($"B: {B("./input/input.txt")}");
 
 static string A(string in_file)
 {
