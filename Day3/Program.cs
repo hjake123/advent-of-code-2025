@@ -1,8 +1,7 @@
-﻿Console.WriteLine($"A: {A("./input/input.txt")}");
-Console.WriteLine($"B: {B("./input/input.txt")}");
+﻿Console.WriteLine($"A: {Run("./input/input.txt", 2)}");
+Console.WriteLine($"B: {Run("./input/input.txt", 12)}");
 
-
-static string A(string in_file)
+static string Run(string in_file, int cells_to_activate)
 {
     var file_handle = File.OpenText(in_file);
     if (file_handle == null)
@@ -19,29 +18,7 @@ static string A(string in_file)
         {
             throw new InvalidDataException($"No line before end of stream??");
         }
-        joltage += NCellJoltage(line, 2);
-    }
-    return $"{joltage}";
-}
-
-static string B(string in_file)
-{
-    var file_handle = File.OpenText(in_file);
-    if (file_handle == null)
-    {
-        throw new FileNotFoundException($"{in_file} does not exist or is inaccessible");
-    }
-
-    long joltage = 0;
-
-    while (!file_handle.EndOfStream)
-    {
-        string? line = file_handle.ReadLine();
-        if (line == null)
-        {
-            throw new InvalidDataException($"No line before end of stream??");
-        }
-        joltage += NCellJoltage(line, 12);
+        joltage += NCellJoltage(line, cells_to_activate);
     }
     return $"{joltage}";
 }
