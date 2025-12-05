@@ -71,6 +71,8 @@ static List<Tuple<long, long>> MergeOverlappingRanges(List<Tuple<long, long>> in
                     break;
                 }
             }
+            // If there is an overlap, merge it into the active range
+            // and remove the newly redundant range from the unique list for next cycle
             if (overlapping_range != null)
             {
                 active_range = MergeRanges(active_range, overlapping_range);
