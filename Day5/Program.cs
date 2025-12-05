@@ -58,7 +58,7 @@ static List<Tuple<long, long>> MergeOverlappingRanges(List<Tuple<long, long>> in
     foreach (var input_range in input_ranges)
     {
         Tuple<long, long> active_range = Tuple.Create(input_range.Item1, input_range.Item2);
-        Tuple<long, long> overlapping_range;
+        Tuple<long, long>? overlapping_range;
         do
         {
             // Find an overlap if one exists
