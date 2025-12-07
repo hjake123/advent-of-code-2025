@@ -47,40 +47,34 @@ static int A(string in_file)
     return split_events;
 }
 
-// Count upward by recursively checking different paths that could happen upward.
-// If you reach the S, return 1. If you leave the grid, return 0.
-// Otherwise, return the sum of the possible paths above yourself.
-static long CountTimelinesUpward(List<string> grid, int x_positon, int row_number, ref Dictionary<Tuple<int, int>, long> memos)
+static long CountTimelines(List<string> grid, int x_positon, int row_number, ref Dictionary<Tuple<int, int>, long> memos)
 {
+    if (row_number == grid.Count - 1)
+    {
+        return 1;
+    }
+
     var memo_key = Tuple.Create(x_positon, row_number);
     if (memos.ContainsKey(memo_key))
     {
         return memos[memo_key];
     }
-
-    if (row_number <= 0)
-    {
-        memos.Add(memo_key, grid[row_number][x_positon] == 'S' ? 1 : 0);
-        return grid[row_number][x_positon] == 'S' ? 1 : 0;
-    }
+    long tally = 0;
     if (grid[row_number][x_positon] == '^')
     {
-        // No valid path ever terminates in a splitter.
-        memos.Add(memo_key, 0);
-        return 0;
-    }
-    long tally = 0;
-    if (x_positon > 0 && grid[row_number][x_positon - 1] == '^')
+        if (x_positon > 0)
+        {
+            tally += CountTimelines(grid, x_positon - 1, row_number + 1, ref memos);
+        }
+        if (x_positon <= grid[row_number + 1].Length - 1)
+        {
+            tally += CountTimelines(grid, x_positon + 1, row_number + 1, ref memos);
+        }
+    } 
+    else
     {
-        // There is a splitter to our left, so there could be a path to the left of us.
-        tally += CountTimelinesUpward(grid, x_positon - 1, row_number - 1, ref memos);
+        tally += CountTimelines(grid, x_positon, row_number + 1, ref memos);
     }
-    if (x_positon < grid[row_number].Length-1 && grid[row_number][x_positon + 1] == '^')
-    {
-        // There is a splitter to our right, so there could be a path to the right of us.
-        tally += CountTimelinesUpward(grid, x_positon + 1, row_number - 1, ref memos);
-    }
-    tally += CountTimelinesUpward(grid, x_positon, row_number - 1, ref memos);
     memos.Add(memo_key, tally);
     return tally;
 }
@@ -89,11 +83,6 @@ static long B(string in_file)
 {
     var input_file = File.OpenText(in_file);
     List<string> rows = input_file.ReadToEnd().Split("\r\n").ToList();
-    long timelines = 0;
     var memos = new Dictionary<Tuple<int, int>, long>();
-    for (int i = 0; i < rows[rows.Count - 1].Length; i++)
-    {
-        timelines += CountTimelinesUpward(rows, i, rows.Count - 1, ref memos);
-    }
-    return timelines;
+    return CountTimelines(rows, rows[0].IndexOf('S'), 0, ref memos);
 }
